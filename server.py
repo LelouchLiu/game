@@ -8,11 +8,13 @@ from twisted.application.internet import TCPServer
 from server.server_world import *
 from server.server_network import GameFactory
 
-#sys.path.append('data')
-port = 1338
-host = 'localhost'
+sys.path.append('data')
 
 def main():
+
+	port = 1338
+	host = 'localhost'
+
 	print 'Server Started on port ',port
 
 	world = World(granularity=100, platformClock=reactor)
