@@ -2,30 +2,56 @@
 import random
 from twisted.application.service import Service
 from twisted.internet.task import LoopingCall
+from client.player import *
+from client.environment import *
+from client.manager import *
 
-#TCP_SERVICE_NAME = 'tcp-service-name'
-#GAME_SERVICE_NAME = 'game-service-name'
 
-#class World(SimulationTime):
-class World():
-
+class World(SimulationTime):
+	
 	#windowSize = 400,400
-	flag = True
 	def __init__(self, platformClock=None, random=random, granularity=1, windowSize=[400,400]):
-		pass
-		#SimulationTime.__init__(self, granularity, platformClock)
+		SimulationTime.__init__(self, granularity, platformClock)
 		#self.random = random
 		self.observers = []
 		self.players = []
-		self.manager = None
-		#self.start()
+		self.manager = Manager(seconds=self.seconds)
+		self.start()
 		#self.loadLevel('level.txt')
 		#lc = LoopingCall(self.update)
 		#lc.start(1/60)
 
+	def update(self):
+		self.manager.update()
+
+	def createPlayer(self):
+		#Make a new L{Player}.
+		x = 200
+		y = 200
+		player = Player([x,y], self.seconds)
+		player.manager = self.manager
+		self.manager.players.add(player)
+		for observer in self.observers:
+			observer.playerCreated(player)
+		self.players.append(player)
+		return player
+		
+	def getPlayers(self):
+		#Return an iterator of all Players in this World.
+		return iter(self.players)
+
+	def removePlayer(self, player):
+		#Stop tracking the given Player and notify observers via the playerRemoved method.
+		self.players.remove(player)
+		for observer in self.observers:
+			observer.playerRemoved(player)
+
+	def addObserver(self, observer):
+		#Add the given object to the list of those notified about state changes in this world.
+		self.observers.append(observer)
 
 class GameService(Service):
-	#An L{IService<twisted.application.service.IService>} which starts and stops simulation time on a L{World}.
+	#An IService<twisted.application.service.IService which starts and stops simulation time on a World.
 
 	def __init__(self, world):
 		self.world = world
