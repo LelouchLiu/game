@@ -1,20 +1,27 @@
+#Entry point for client
+
 import sys
 from twisted.internet import reactor
 from twisted.python import log
-#from client.player import *
-#from client.environment import Environment
-#from client.ui import *
+from client.player import *
+from client.environment import Environment
+from client.ui import *
 sys.path.append('data')
 
 def main():
-	print 'Client'
 	host = 'localhost'
 	port = 1338
-	multi = False
+	multi = True
+
+	if multi:
+		print 'Client - Multi Player port:'  
+	else:
+		print 'Client - Single Player'
 	
 	if multi: 
 		run(host,port)
 	else:
+		pass
 		#environment = Environment(100, reactor)
 		#environment.start()
 		#window = Window(environment)
@@ -26,12 +33,12 @@ def main():
 		
 def run(host, port):
 	log.startLogging(sys.stdout)
-	#client = UI()
+	client = UI()
 	a = client.start(host,port)
-	#a.addErrback(log.err, "Problem Running UI")
-	#client.addCallback(lambda ignored: self.reactor.stop())
-	#reactor.connectTCP('localhost',1337, client)
-	#client.reactor.run()
+	a.addErrback(log.err, "Server Error")
+	a.addCallback(lambda ignored: reactor.stop())
+	#reactor.connectTCP(host, port, client)
+	client.reactor.run()
 	
 
 if __name__ == '__main__':
