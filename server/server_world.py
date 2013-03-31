@@ -26,9 +26,8 @@ class World(SimulationTime):
 
 	def createPlayer(self):
 		#Make a new L{Player}.
-		x = 200
-		y = 200
-		player = Player([x,y], self.seconds)
+		pos = [200,200]
+		player = Player(pos, self.seconds)
 		player.manager = self.manager
 		self.manager.players.add(player)
 		for observer in self.observers:

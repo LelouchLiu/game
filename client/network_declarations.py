@@ -20,13 +20,13 @@ class Dir(Argument):
 
 class Introduce(Command):
 	#Client greeting message used to retrieve initial model state.
-	response = [('identifier', Integer()), ('granularity', Integer()), ('x': Float()), ('y': Float())]
+	response = [('identifier', Integer()), ('granularity', Integer()), ('x', Float()), ('y', Float())]
 
 
 class NewPlayer(Command):
 	#Notify someone that a L{Player} with the given C{identifier} is at the given position.
 
-	arguments = [('identifier', Integer()), ('x': Float()), ('y': Float())]
+	arguments = [('identifier', Integer()), ('x', Float()), ('y', Float())]
 
 	
 class RemovePlayer(Command):

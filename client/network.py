@@ -24,7 +24,7 @@ class NetworkController(AMP):
 	
 	def createInitialPlayer(self, environment, identifier, position):
 		#Create this client's player as the initial player in the given environment and add it to the model object mapping.
-		player = environment.createPlayer(position, speed)
+		player = environment.createPlayer(position)
 		player.id = identifier
 		environment.setInitialPlayer(player)
 		self.addModelObject(identifier, player)
