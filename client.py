@@ -14,14 +14,10 @@ def main():
 	multi = True
 
 	if multi:
-		print 'Client - Multi Player port:'  
-	else:
-		print 'Client - Single Player'
-	
-	if multi: 
+		print 'Client - Multi Player port:'
 		run(host,port)
 	else:
-		pass
+		print 'Client - Single Player'
 		#environment = Environment(100, reactor)
 		#environment.start()
 		#window = Window(environment)
