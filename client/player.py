@@ -26,3 +26,7 @@ class Player(pygame.sprite.Sprite):
 	def addObserver(self, observer):
 		#Add the given object to the list of those notified about state changes in this player.
 		self.observers.append(observer)
+
+	def setDirection(self, dir):
+		self.direction = dir
+		print dir

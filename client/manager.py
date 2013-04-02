@@ -12,18 +12,24 @@ class Manager():
 	def __init__(self, seconds, level=None):
 		self.level = level
 		self.seconds = seconds
-		self.client = None #can refer to an actual client or server, not really important which
-		self.players = pygame.sprite.Group()
+		self.client = None #can refer to client or server
+		self.players = {}
 		
 	def update(self):
 		pass	
-		#self.updateProjectiles()
-		#self.updateCreeps()
+		
+	def addClient(self, client):
+		self.client = client
 		
 	def addPlayer(self, player):
-		#self.modelobjects[id(player)] = player
+		self.players[id(player)] = player
 		player.id = id(player)
-		self.players.add(player)
+
+	def removePlayer(self, player):
+		del self.players[player.id]
+
+
+
 
 
 				
