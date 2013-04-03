@@ -14,9 +14,10 @@ class Manager():
 		self.seconds = seconds
 		self.client = None #can refer to client or server
 		self.players = {}
+		self.resolution = None
 		
 	def update(self):
-		pass	
+		self.client.update()
 		
 	def addClient(self, client):
 		self.client = client

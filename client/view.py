@@ -16,7 +16,7 @@ class Window(object):
 
 	screen = None
 	FPS = 60
-	size = width, height = 400, 400
+	resolution = width, height = 400, 400
 
 	def __init__(self, environment, clock=reactor,event=pygame.event):
 		self.environment = environment
@@ -61,6 +61,7 @@ class Window(object):
 		self.manager = Manager(self.level, self.client.seconds)
 		self.manager.addPlayer(self.client)
 		self.manager.addClient(self.client)
+		self.manager.resolution = self.resolution
 		
 		#self.level.manager = self.manager
 		#self.level.screen = self.screen
@@ -91,7 +92,7 @@ class Window(object):
 		pygame.init()
 
 		
-		self.screen = pygame.display.set_mode(self.size)
+		self.screen = pygame.display.set_mode(self.resolution)
 		self.sprites.add(self.client)
 		self.createLevel()
 		

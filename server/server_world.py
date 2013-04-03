@@ -29,7 +29,8 @@ class World(SimulationTime):
 		pos = [200,200]
 		player = Player(pos, self.seconds)
 		player.manager = self.manager
-		self.manager.players.add(player)
+		self.manager.addPlayer(player)
+		
 		for observer in self.observers:
 			observer.playerCreated(player)
 		self.players.append(player)
