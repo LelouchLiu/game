@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
 		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/player.png"
 		self.image = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()
-		self.worldPos = position
+		self.rect.center = self.worldPos = position
 		self.lastDirectionChange = seconds()
 		self.direction = [0,-1]
 		self.seconds = seconds
@@ -45,10 +45,16 @@ class Player(pygame.sprite.Sprite):
 	def updatePos(self):
 		self.worldPos[0] += self.direction[0] * self.speed
 		self.worldPos[1] += self.direction[1] * self.speed
-
-		#Below will change
+		#Below 2 lines are temporary
 		self.rect.centerx += self.direction[0] * self.speed
 		self.rect.centery += self.direction[1] * self.speed
-
+		
 		for observer in self.observers:
 			observer.posChanged(self)
+
+			
+	def fireProj(self, pos):
+		proj = Projectile(self.rect.center, self.worldPos, pos, 0, self.seconds)
+		self.manager.addProjectile(proj)
+		#for observer in self.observers:
+			#observer.createProjectile(proj)

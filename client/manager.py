@@ -14,10 +14,18 @@ class Manager():
 		self.seconds = seconds
 		self.client = None #can refer to client or server
 		self.players = {}
+		self.projectiles = pygame.sprite.Group()
 		self.resolution = None
 		
 	def update(self):
 		self.client.update()
+		self.updateProjectiles()
+
+	def updateProjectiles(self):
+		for proj in self.projectiles:
+			if not proj.updatePos():
+				proj.kill()
+			#add collision detection
 		
 	def addClient(self, client):
 		self.client = client
@@ -29,7 +37,8 @@ class Manager():
 	def removePlayer(self, player):
 		del self.players[player.id]
 
-
+	def addProjectile(self, proj):
+		self.projectiles.add(proj)
 
 
 

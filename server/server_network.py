@@ -66,7 +66,6 @@ class GameServer(AMP):
 	def setMyPosition(self, identifier, x, y):
 		player = self.playerForIdentifier(identifier)
 		player.worldPos = [x,y]
-		print player.worldPos
 		return {}
 	SetMyPosition.responder(setMyPosition)	
 

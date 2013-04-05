@@ -26,7 +26,7 @@ class Window(object):
 		self.controller = None
 		self.event = event
 		self.client = None
-		#self.drawGroup = pygame.sprite.Group()#sprites that change one each update
+		self.drawGroup = pygame.sprite.Group() #sprites that change on each update
 		self.sprites = pygame.sprite.Group() #always drawing same sprites i.e. player	
 		#self.textInput = False #used for typing message
 		#self.textBuffer = []
@@ -36,15 +36,20 @@ class Window(object):
 		black = 0, 0, 0
 		self.screen.fill(black)
 		#self.drawLevel()
-		#self.drawProjectiles()
+		self.drawProjectiles()
 		self.drawPlayers()
 		#self.drawCreeps()
-		#self.drawGroup.draw(self.screen)
+		self.drawGroup.draw(self.screen)
 		self.sprites.draw(self.screen)
 		#self.drawText()
 		pygame.display.flip()
-		#self.drawGroup.empty()
+		self.drawGroup.empty()
 
+
+	def drawProjectiles(self):
+		for proj in self.manager.projectiles:
+			#add collision shit here and move projectile accordingly to player view
+			self.drawGroup.add(proj)
 	def drawPlayers(self):
 		#draw players inside client.camera
 		pass
@@ -55,10 +60,10 @@ class Window(object):
 		
 	def createLevel(self):
 		#self.level = Level(self.size, None, 'level.txt')
-		self.level = None
+		#self.level = None
 		#if self.environment.network:
 		#	self.environment.network.loadLevel('level.txt')
-		self.manager = Manager(self.level, self.client.seconds)
+		self.manager = Manager(self.client.seconds)
 		self.manager.addPlayer(self.client)
 		self.manager.addClient(self.client)
 		self.manager.resolution = self.resolution
@@ -81,6 +86,8 @@ class Window(object):
 		#Handle a single pygame input event.
 		if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_q:
 			self.stop()
+		else:
+			self.controller.handleEvent(event)
 							
 	def submitTo(self, controller):
 		#Specify the given controller as the one to receive further events.
@@ -90,8 +97,7 @@ class Window(object):
 		#Show this window.
 		#return: A Deferred that fires when this window is closed by the user.
 		pygame.init()
-
-		
+	
 		self.screen = pygame.display.set_mode(self.resolution)
 		self.sprites.add(self.client)
 		self.createLevel()
@@ -108,10 +114,11 @@ class Window(object):
 		return finishedDeferred
 		
 	def stop(self):
+		#Stop updating this window and handling events for it.
 		self.environment.stop()
 		pygame.quit()
 		sys.exit()
-		#Stop updating this window and handling events for it.
+		
 
 	def playerCreated(self, player):
 		self.sprites.add(player)
