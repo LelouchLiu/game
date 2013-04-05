@@ -2,7 +2,7 @@ from twisted.protocols.amp import (AMP, Command, Integer, Float, Argument, Strin
 from environment import *
 from player import *
 from network_declarations import *
-
+import copy
 class NetworkController(AMP):
 	#A controller which responds to AMP commands to make state changes to local model objects.
 	#modelObjects: A dict mapping identifiers to model objects.
@@ -53,7 +53,6 @@ class NetworkController(AMP):
 	def identifierByObject(self, modelObject):
 		#Look up the network identifier for a given model object.
 		#@raise ValueError: If no network identifier is associated with the given model object.
-		#@rtype: L{int}
 		for identifier, object in self.modelObjects.iteritems():
 			if object is modelObject:
 				return identifier
@@ -67,10 +66,19 @@ class NetworkController(AMP):
 		return {}
 	NewPlayer.responder(newPlayer)
 
-
 	def removePlayer(self, identifier):
 		#Remove an existing Player object from the Environment and stop tracking its identifier on the network.
 		self.environment.removePlayer(self.objectByIdentifier(identifier))
 		del self.modelObjects[identifier]
 		return {}
 	RemovePlayer.responder(removePlayer)
+
+	def directionChanged(self, player):
+		direction = copy.deepcopy(player.direction)
+		d = self.callRemote(SetMyDirection, direction=direction)
+		#d.addCallback(self.gotNewPosition, obj)
+
+	def posChanged(self, player):
+		pos = player.worldPos
+		identifier = self.identifierByObject(player)
+		d = self.callRemote(SetMyPosition, identifier=identifier, x=pos[0], y=pos[1])

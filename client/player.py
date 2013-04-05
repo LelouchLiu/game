@@ -36,6 +36,8 @@ class Player(pygame.sprite.Sprite):
 
 	def setDirection(self, dir):
 		self.direction = dir
+		for observer in self.observers:
+			observer.directionChanged(self)
 
 	def update(self):
 		self.updatePos()
@@ -47,3 +49,6 @@ class Player(pygame.sprite.Sprite):
 		#Below will change
 		self.rect.centerx += self.direction[0] * self.speed
 		self.rect.centery += self.direction[1] * self.speed
+
+		for observer in self.observers:
+			observer.posChanged(self)
