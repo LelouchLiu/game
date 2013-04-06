@@ -14,7 +14,7 @@ def main():
 	multi = True
 
 	if multi:
-		print 'Client - Multi Player port:'
+		print 'Client - Multi Player port:', port
 		run(host,port)
 	else:
 		print 'Client - Single Player'
