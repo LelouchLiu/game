@@ -11,21 +11,21 @@ sys.path.append('data')
 def main():
 	host = 'localhost'
 	port = 1338
-	multi = True
+	multi = False
 
 	if multi:
 		print 'Client - Multi Player port:', port
 		run(host,port)
 	else:
 		print 'Client - Single Player'
-		#environment = Environment(100, reactor)
-		#environment.start()
-		#window = Window(environment)
-		#player = Player([200,200], 7, environment.seconds)
-		#window.client = player
-		#window.submitTo(PlayerController(player))
-		#window.go()
-		#reactor.run()
+		environment = Environment(100, reactor)
+		environment.start()
+		window = Window(environment)
+		player = Player([400,400], environment.seconds)
+		window.client = player
+		window.submitTo(PlayerController(player))
+		window.go()
+		reactor.run()
 		
 def run(host, port):
 	log.startLogging(sys.stdout)

@@ -1,6 +1,10 @@
 import os
 import pygame
+import view
+import math
+import pymunk
 from pymunk import Vec2d
+
 
 #from vector import Vector
 #from projectile import *
@@ -11,7 +15,7 @@ from pymunk import Vec2d
 
 class Player(pygame.sprite.Sprite):
 	
-	speed = 10
+	speed = 50
 
 	def __init__(self, position, seconds):
 		pygame.sprite.Sprite.__init__(self)
@@ -27,8 +31,10 @@ class Player(pygame.sprite.Sprite):
 		self.mass = 500
 		self.width = self.height = 30
 		self.inertia = pymunk.moment_for_box(500, self.width, self.height) #mass, width, height
+		self.elasticity = 1.0
 		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
 		self.shape = pymunk.Poly.create_box(self.body, (self.width, self.height))
+		self.body.position = pymunk.Vec2d(position[0], position[1])
 
 	#center the player when resolution is set/changed
 	def center(self, resolution):
@@ -50,12 +56,19 @@ class Player(pygame.sprite.Sprite):
 		self.updatePos()
 
 	def updatePos(self):
-		self.worldPos[0] += self.direction[0] * self.speed
-		self.worldPos[1] += self.direction[1] * self.speed
+		#self.worldPos[0] += self.direction[0] * self.speed
+		#self.worldPos[1] += self.direction[1] * self.speed
+		
 		self.body.velocity = (self.direction[0] * self.speed, self.direction[1] * self.speed)
-		#Below 2 lines are temporary
-		#self.rect.centerx += self.direction[0] * self.speed
-		#self.rect.centery += self.direction[1] * self.speed
+		
+		#Below lines are temporary to show movement until environment is added
+		pos = self.body.position
+		#print self.direction, pos
+		pos = Vec2d(pos.x, pos.y)
+		angle = math.degrees(self.body.angle)
+		print angle
+		self.image = pygame.transform.rotate(self.image, angle)
+		self.rect.center = (pos.x, pos.y)
 		
 		for observer in self.observers:
 			observer.posChanged(self)

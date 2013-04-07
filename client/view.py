@@ -129,8 +129,14 @@ class Window(object):
 		self.sprites.remove(player)
 		#sel.scene._items.remove(view)
 
+	@staticmethod
+	def flipy(y):
+		#Used to flip y coordinate, pymunk and pygame are inverted :/
+		return -y + self.height
+
 class PlayerView():
 
 	def paint(self):	
 		position = self.player.getPosition()
 			
+
