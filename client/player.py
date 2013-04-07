@@ -1,5 +1,6 @@
 import os
 import pygame
+from pymunk import Vec2d
 
 #from vector import Vector
 #from projectile import *
@@ -14,7 +15,7 @@ class Player(pygame.sprite.Sprite):
 
 	def __init__(self, position, seconds):
 		pygame.sprite.Sprite.__init__(self)
-		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/player.png"
+		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/ship.gif"
 		self.image = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()
 		self.rect.center = self.worldPos = position
@@ -22,6 +23,12 @@ class Player(pygame.sprite.Sprite):
 		self.direction = [0,-1]
 		self.seconds = seconds
 		self.observers = []
+
+		self.mass = 500
+		self.width = self.height = 30
+		self.inertia = pymunk.moment_for_box(500, self.width, self.height) #mass, width, height
+		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
+		self.shape = pymunk.Poly.create_box(self.body, (self.width, self.height))
 
 	#center the player when resolution is set/changed
 	def center(self, resolution):
@@ -45,9 +52,10 @@ class Player(pygame.sprite.Sprite):
 	def updatePos(self):
 		self.worldPos[0] += self.direction[0] * self.speed
 		self.worldPos[1] += self.direction[1] * self.speed
+		self.body.velocity = (self.direction[0] * self.speed, self.direction[1] * self.speed)
 		#Below 2 lines are temporary
-		self.rect.centerx += self.direction[0] * self.speed
-		self.rect.centery += self.direction[1] * self.speed
+		#self.rect.centerx += self.direction[0] * self.speed
+		#self.rect.centery += self.direction[1] * self.speed
 		
 		for observer in self.observers:
 			observer.posChanged(self)

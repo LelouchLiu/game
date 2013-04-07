@@ -2,7 +2,9 @@
 
 import pygame
 import types
+import pymunk
 from pygame.locals import*
+from pygame.colors import *
 from twisted.python.filepath import FilePath
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
@@ -16,6 +18,13 @@ class Manager():
 		self.players = {}
 		self.projectiles = pygame.sprite.Group()
 		self.resolution = None
+
+		self.space = pymunk.Space()
+		self.temp()
+
+
+	def temp(self):
+
 		
 	def update(self):
 		self.client.update()

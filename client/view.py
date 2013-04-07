@@ -16,7 +16,7 @@ class Window(object):
 
 	screen = None
 	FPS = 60
-	resolution = width, height = 400, 400
+	resolution = width, height = 600, 600
 
 	def __init__(self, environment, clock=reactor,event=pygame.event):
 		self.environment = environment

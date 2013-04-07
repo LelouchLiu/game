@@ -9,8 +9,8 @@ from client.manager import *
 
 class World(SimulationTime):
 	
-	#windowSize = 400,400
-	def __init__(self, platformClock=None, random=random, granularity=1, windowSize=[400,400]):
+	resolution = 600,600
+	def __init__(self, platformClock=None, random=random, granularity=1, windowSize=[600,600]):
 		SimulationTime.__init__(self, granularity, platformClock)
 		#self.random = random
 		self.observers = []
