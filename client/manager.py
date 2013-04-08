@@ -31,7 +31,7 @@ class Manager():
 			line.color = THECOLORS['lightgray']
 			line.elasticity = 1.0
 
-		self.space.add(staticLines)
+		#self.space.add(staticLines)
 		
 	def update(self):
 		self.client.update()

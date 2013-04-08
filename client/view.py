@@ -11,7 +11,6 @@ import copy
 import string
 
 
-
 class Window(object):
 
 	screen = None
@@ -42,6 +41,7 @@ class Window(object):
 		self.drawGroup.draw(self.screen)
 		self.sprites.draw(self.screen)
 		#self.drawText()
+		#pymunk.pygame_util.draw_space(self.screen, self.manager.space)
 		pygame.display.flip()
 		self.drawGroup.empty()
 
@@ -129,10 +129,6 @@ class Window(object):
 		self.sprites.remove(player)
 		#sel.scene._items.remove(view)
 
-	@staticmethod
-	def flipy(y):
-		#Used to flip y coordinate, pymunk and pygame are inverted :/
-		return -y + self.height
 
 class PlayerView():
 
