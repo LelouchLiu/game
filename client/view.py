@@ -14,8 +14,8 @@ import string
 class Window(object):
 
 	screen = None
-	FPS = 60
-	resolution = width, height = 600, 600
+	FPS = 100
+	resolution = width, height = 900, 900
 
 	def __init__(self, environment, clock=reactor,event=pygame.event):
 		self.environment = environment

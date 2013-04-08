@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
 		self.orientation = 0
 
 		#pymunk initializations
-		self.inertia = pymunk.moment_for_box(500, self.width, self.height) #mass, width, height
+		self.inertia = pymunk.moment_for_box(self.mass, self.width, self.height) #mass, width, height
 		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
 		self.shape = pymunk.Poly.create_box(self.body, (self.width, self.height))
 		self.body.position = pymunk.Vec2d(position[0], position[1])
@@ -73,7 +73,7 @@ class Player(pygame.sprite.Sprite):
 		force = pymunk.Vec2d(thrust * x,
 				thrust * y)
 
-		print force
+		#print force
 		#print x,y
 		offset = [0, 0]
 		
@@ -88,6 +88,7 @@ class Player(pygame.sprite.Sprite):
 		#print angle
 		#self.image = pygame.transform.rotate(self.image, angle)
 		self.rect.center = (pos.x, pos.y)
+		print self.rect.center
 		
 		for observer in self.observers:
 			observer.posChanged(self)
