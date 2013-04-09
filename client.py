@@ -12,6 +12,7 @@ def main():
 	host = 'localhost'
 	port = 1338
 	multi = False
+	resolution = [1200,1200]
 
 	if multi:
 		print 'Client - Multi Player port:', port
@@ -20,15 +21,15 @@ def main():
 		print 'Client - Single Player'
 		environment = Environment(100, reactor)
 		environment.start()
-		window = Window(environment)
-		player = Player([400,400], environment.seconds)
+		window = Window(environment, resolution)
+		player = Player([400,400], environment.seconds, resolution)
 		window.client = player
 		window.submitTo(PlayerController(player))
 		window.go()
 		reactor.run()
 	
 		
-def run(host, port):
+def run(host, port, res):
 	log.startLogging(sys.stdout)
 	client = UI()
 	a = client.start(host,port)

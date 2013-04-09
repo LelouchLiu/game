@@ -18,7 +18,7 @@ class Player(pygame.sprite.Sprite):
 	width = height = 30
 	elasticity = 0.65
 
-	def __init__(self, position, seconds):
+	def __init__(self, position, seconds, resolution):
 		pygame.sprite.Sprite.__init__(self)
 		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/ship.gif"
 		self.origImage = pygame.image.load(imgPath)

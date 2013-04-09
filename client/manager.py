@@ -41,11 +41,15 @@ class Manager():
 		#self.space._space.contents.elasticIterations = 10
 		self.client.update()
 		self.updateProjectiles()
-		self.updateObjPos()
+		self.updatePos()
 
 		self.space.step(1.0/60)
 
-	def updateObjPos(self):
+	def updatePos(self):
+		for obj in self.players:
+			self.updateObjPos(obj)
+
+	def updateObjPos(self, obj):
 		#start with client move on from there in future
 
 		obj = self.client
@@ -54,7 +58,7 @@ class Manager():
 		y = math.sin(rad)
 		thrust = obj.thrust * -obj.direction[1]
 		force = pymunk.Vec2d(thrust * x, thrust * y)
-		print force
+		#TODO: figure out the offset behind the ship. see if it is any different
 		offset = [0, 0]
 		obj.body.apply_impulse(force, r=offset)
 		pos = obj.body.position

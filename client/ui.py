@@ -28,9 +28,10 @@ class ConnectionNotificationFactory(WrappingFactory):
 
 class UI(object):
 	#windowFactory: The factory that should produce things like game.view.Window.	
-	def __init__(self, reactor=reactor, windowFactory=Window):
+	def __init__(self, reactor=reactor, windowFactory=Window, resolution=None):
 		self.reactor = reactor
 		self.windowFactory = windowFactory
+		self.resolution = resolution
 
 	def connect(self, host, port):
 		clientFactory = ClientFactory()
@@ -49,7 +50,7 @@ class UI(object):
 
 	def gotIntroduced(self, environment):
 		#Hook up a user-interface controller for the Player and display the Environment in a Window.
-		self.window = self.windowFactory(environment, self.reactor)
+		self.window = self.windowFactory(environment, self.resolution, self.reactor)
 		player = environment.initialPlayer
 		if player is not None:
 			self.gotInitialPlayer(player)

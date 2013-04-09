@@ -15,39 +15,38 @@ import string
 class Window(object):
 
 	screen = None
-	FPS = 100
-	resolution = width, height = 900, 900
+	FPS = 60
 
-	def __init__(self, environment, clock=reactor,event=pygame.event):
+	#Intialize window object, anything initialzed to none is updated at a later time
+	def __init__(self, environment, resolution, clock=reactor, event=pygame.event):
 		self.environment = environment
 		self.manager = None
+		self.resolution = resolution
 		self.environment.addObserver(self)
 		self.clock = clock
 		self.controller = None
 		self.event = event
 		self.client = None
-		self.drawGroup = pygame.sprite.Group() #sprites that change on each update
-		self.sprites = pygame.sprite.Group() #always drawing same sprites i.e. player	
-		#self.textInput = False #used for typing message
-		#self.textBuffer = []
-		#self.shift = False
+		self.dynamicSprites = pygame.sprite.Group()
+		self.staticSprites = pygame.sprite.Group()
+
 	
 	def paint(self):
 		black = 0, 0, 0
 		self.screen.fill(black)
 		self.drawProjectiles()
 		self.drawPlayers()
-		self.drawGroup.draw(self.screen)
-		self.sprites.draw(self.screen)
+		self.dynamicSprites.draw(self.screen)
+		self.staticSprites.draw(self.screen)
 		draw_space(self.screen, self.manager.space) #pymunk space
 		pygame.display.flip()
-		self.drawGroup.empty()
+		self.dynamicSprites.empty()
 
 
 	def drawProjectiles(self):
 		for proj in self.manager.projectiles:
 			#add collision shit here and move projectile accordingly to player view
-			self.drawGroup.add(proj)
+			self.dynamicSprites.add(proj)
 	def drawPlayers(self):
 		#draw players inside client.camera
 		pass
@@ -97,7 +96,7 @@ class Window(object):
 		pygame.init()
 	
 		self.screen = pygame.display.set_mode(self.resolution)
-		self.sprites.add(self.client)
+		self.staticSprites.add(self.client)
 		self.createLevel()
 		
 		self._renderCall = LoopingCall(self.paint)
