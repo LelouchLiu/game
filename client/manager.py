@@ -4,6 +4,7 @@ import pygame
 import types
 import pymunk
 import math
+import copy
 from pygame.locals import*
 from pygame.color import *
 from twisted.python.filepath import FilePath
@@ -17,7 +18,7 @@ class Manager():
 		self.level = level
 		self.seconds = seconds
 		self.client = None #can refer to client or server
-		self.players = {}
+		self.players = []
 		self.projectiles = pygame.sprite.Group()
 		self.resolution = None
 
@@ -48,16 +49,29 @@ class Manager():
 	def updatePos(self):
 		for obj in self.players:
 			self.updateObjPos(obj)
+			self.updateObjRot(obj)
 
+	def updateObjRot(self, obj):
+		#update objects orientation to current body orientation... not sure if i want it or not
+		#obj.orientation = obj.toDegrees(obj.body._get_angle())
+		obj.orientation += -obj.direction[0] * obj.rotationSpeed
+		if obj.orientation > 360:
+			obj.orientation -= 360
+		elif obj.orientation < 0:
+			obj.orientation += 360
+		oldPos = copy.deepcopy(obj.rect.center)
+		obj.image = pygame.transform.rotate(obj.origImage, obj.orientation)
+		obj.rect = obj.image.get_rect(center=oldPos)
+		obj.body._set_angle(obj.toRadians(obj.orientation))
+
+	#update object position
 	def updateObjPos(self, obj):
-		#start with client move on from there in future
-
-		obj = self.client
-		rad = obj.toRadians()
+		rad = obj.toRadians(obj.orientation)
 		x = math.cos(rad)
 		y = math.sin(rad)
 		thrust = obj.thrust * -obj.direction[1]
 		force = pymunk.Vec2d(thrust * x, thrust * y)
+
 		#TODO: figure out the offset behind the ship. see if it is any different
 		offset = [0, 0]
 		obj.body.apply_impulse(force, r=offset)
@@ -77,12 +91,13 @@ class Manager():
 		self.client = client
 		
 	def addPlayer(self, player):
-		self.players[id(player)] = player
-		player.id = id(player)
+		#self.players[id(player)] = player
+		#player.id = id(player)
+		self.players.append(player)
 		self.space.add(player.body, player.shape)
 
-	def removePlayer(self, player):
-		del self.players[player.id]
+	#def removePlayer(self, player):
+		#del self.players[player.id]
 
 	def addProjectile(self, proj):
 		self.projectiles.add(proj)

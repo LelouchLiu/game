@@ -12,7 +12,7 @@ def main():
 	host = 'localhost'
 	port = 1338
 	multi = False
-	resolution = [1200,1200]
+	resolution = [1200,900]
 
 	if multi:
 		print 'Client - Multi Player port:', port
