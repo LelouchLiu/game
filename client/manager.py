@@ -3,11 +3,13 @@
 import pygame
 import types
 import pymunk
+import math
 from pygame.locals import*
 from pygame.color import *
 from twisted.python.filepath import FilePath
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
+from pymunk import Vec2d
 
 class Manager():
 
@@ -20,23 +22,46 @@ class Manager():
 		self.resolution = None
 
 		self.space = pymunk.Space()
-		self.temp()
+
+		self.createSpace()
 
 
-	def temp(self):
+	#temporary set-up
+	def createSpace(self):
 		staticLines = [pymunk.Segment(self.space.static_body, (50, 50), (50, 550), 5),
 						pymunk.Segment(self.space.static_body, (50, 550), (550, 550), 5),
 						pymunk.Segment(self.space.static_body, (550, 550), (550, 50), 5)]
 		for line in staticLines:
 			line.color = THECOLORS['lightgray']
-			line.elasticity = 1.0
+			line.elasticity = .95
 
-		#self.space.add(staticLines)
+		self.space.add(staticLines)
 		
 	def update(self):
+		#self.space._space.contents.elasticIterations = 10
 		self.client.update()
 		self.updateProjectiles()
+		self.updateObjPos()
+
 		self.space.step(1.0/60)
+
+	def updateObjPos(self):
+		#start with client move on from there in future
+
+		obj = self.client
+		rad = obj.toRadians()
+		x = math.cos(rad)
+		y = math.sin(rad)
+		thrust = obj.thrust * -obj.direction[1]
+		force = pymunk.Vec2d(thrust * x, thrust * y)
+		print force
+		offset = [0, 0]
+		obj.body.apply_impulse(force, r=offset)
+		pos = obj.body.position
+		obj.rect.center = (pos.x, self.flipy(pos.y))
+
+		for observer in obj.observers:
+			observer.posChanged(obj)
 
 	def updateProjectiles(self):
 		for proj in self.projectiles:

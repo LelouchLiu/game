@@ -2,6 +2,7 @@ from __future__ import division
 import pygame
 import types
 import sys
+from pymunk.pygame_util import draw_space
 from pygame.locals import*
 from twisted.python.filepath import FilePath
 from twisted.internet.task import LoopingCall
@@ -34,14 +35,11 @@ class Window(object):
 	def paint(self):
 		black = 0, 0, 0
 		self.screen.fill(black)
-		#self.drawLevel()
 		self.drawProjectiles()
 		self.drawPlayers()
-		#self.drawCreeps()
 		self.drawGroup.draw(self.screen)
 		self.sprites.draw(self.screen)
-		#self.drawText()
-		#pymunk.pygame_util.draw_space(self.screen, self.manager.space)
+		draw_space(self.screen, self.manager.space) #pymunk space
 		pygame.display.flip()
 		self.drawGroup.empty()
 
