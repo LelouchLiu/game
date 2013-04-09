@@ -12,7 +12,7 @@ def main():
 	host = 'localhost'
 	port = 1338
 	multi = False
-	resolution = [1200,900]
+	resolution = [800,800]
 
 	if multi:
 		print 'Client - Multi Player port:', port
@@ -22,7 +22,7 @@ def main():
 		environment = Environment(100, reactor)
 		environment.start()
 		window = Window(environment, resolution)
-		player = Player([400,400], environment.seconds, resolution)
+		player = Player([200,200], environment.seconds, resolution)
 		window.client = player
 		window.submitTo(PlayerController(player))
 		window.go()
