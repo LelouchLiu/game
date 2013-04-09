@@ -27,7 +27,6 @@ def main():
 		window.submitTo(PlayerController(player))
 		window.go()
 		reactor.run()
-	
 		
 def run(host, port, res):
 	log.startLogging(sys.stdout)
