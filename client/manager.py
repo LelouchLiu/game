@@ -1,16 +1,17 @@
-#Used by server and client to do updates and shit
+#Used by server and client to do updates to game world
 
 import pygame
 import types
 import pymunk
-import math
 import copy
+from math import sin,cos,sqrt,pi
 from pygame.locals import*
 from pygame.color import *
 from twisted.python.filepath import FilePath
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 from pymunk import Vec2d
+
 
 class Manager():
 
@@ -21,9 +22,7 @@ class Manager():
 		self.players = []
 		self.projectiles = pygame.sprite.Group()
 		self.resolution = None
-
 		self.space = pymunk.Space()
-
 		self.createSpace()
 
 
@@ -39,37 +38,42 @@ class Manager():
 		self.space.add(staticLines)
 		
 	def update(self):
-		#self.space._space.contents.elasticIterations = 10
-		self.client.update()
+		self.updatePlayers()
 		self.updateProjectiles()
-		self.updatePos()
-
 		self.space.step(1.0/60)
 
-	def updatePos(self):
+	def updatePlayers(self):
 		for obj in self.players:
 			self.updateObjPos(obj)
-			self.updateObjRot(obj)
+			self.updateObjRot(obj)	
 
+	def updateProjectiles(self):
+		for proj in self.projectiles:
+			pos = proj.body.position
+			proj.rect.center = (pos.x, self.flipy(pos.y))
+			#self.updateObjPos(proj)
+			if proj.distanceTraveled():	
+				proj.kill()
+
+	#update object rotation
 	def updateObjRot(self, obj):
-		#update objects orientation to current body orientation... not sure if i want it or not
+		#update objects orientation to current body orientation. Commented out for now
 		#obj.orientation = obj.toDegrees(obj.body._get_angle())
 		obj.orientation += -obj.direction[0] * obj.rotationSpeed
-		if obj.orientation > 360:
-			obj.orientation -= 360
+		if obj.orientation > (2 * pi):
+			obj.orientation -= (2 * pi)
 		elif obj.orientation < 0:
-			obj.orientation += 360
+			obj.orientation += (2 * pi)
 		oldPos = copy.deepcopy(obj.rect.center)
-		obj.image = pygame.transform.rotate(obj.origImage, obj.orientation)
+		obj.image = pygame.transform.rotate(obj.origImage, self.toDegrees(obj.orientation))
 		obj.rect = obj.image.get_rect(center=oldPos)
-		obj.body._set_angle(obj.toRadians(obj.orientation))
+		obj.body._set_angle(obj.orientation)
 
 	#update object position
 	def updateObjPos(self, obj):
-		rad = obj.toRadians(obj.orientation)
-		x = math.cos(rad)
-		y = math.sin(rad)
-		thrust = obj.thrust * -obj.direction[1]
+		x = cos(obj.orientation)
+		y = sin(obj.orientation)
+		thrust = obj.velocity * -obj.direction[1]
 		force = pymunk.Vec2d(thrust * x, thrust * y)
 
 		#TODO: figure out the offset behind the ship. see if it is any different
@@ -78,14 +82,8 @@ class Manager():
 		pos = obj.body.position
 		obj.rect.center = (pos.x, self.flipy(pos.y))
 
-		for observer in obj.observers:
-			observer.posChanged(obj)
-
-	def updateProjectiles(self):
-		for proj in self.projectiles:
-			if not proj.updatePos():
-				proj.kill()
-			#add collision detection
+		#for observer in obj.observers:
+			#observer.posChanged(obj)
 		
 	def addClient(self, client):
 		self.client = client
@@ -101,9 +99,16 @@ class Manager():
 
 	def addProjectile(self, proj):
 		self.projectiles.add(proj)
+		self.space.add(proj.body, proj.shape)
 
 	def flipy(self, y):
 	#Used to flip y coordinate, pymunk and pygame are inverted :/
 		return -y + self.resolution[1]
 
-				
+	def toRadians(self, angle):
+	#returns orientation in radians
+		return angle * pi / 180.0
+
+	def toDegrees(self, angle):
+		return angle * 180 / pi
+			

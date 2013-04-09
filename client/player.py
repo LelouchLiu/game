@@ -1,18 +1,17 @@
 import os
 import pygame
 import view
-import math
 import pymunk
 import copy
 from pymunk import Vec2d
+from projectile import *
 
-PI = 3.141592653589793238462643383
 
 class Player(pygame.sprite.Sprite):
 	
 	#Constants for now...
-	thrust = 50
-	rotationSpeed = 0.087 #~5 degrees per tic
+	velocity = 50
+	rotationSpeed = 0.087 #~5 degrees
 	maxVel = 200
 	mass = 10
 	width = height = 30
@@ -26,7 +25,7 @@ class Player(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = self.worldPos = position
 		self.lastDirectionChange = seconds()
-		self.direction = [0,-1]
+		self.direction= Vec2d(0,-1)
 		self.seconds = seconds
 		self.observers = []
 		self.orientation = 0
@@ -50,20 +49,13 @@ class Player(pygame.sprite.Sprite):
 		#Add the given object to the list of those notified about state changes in this player.
 		self.observers.append(observer)
 
-	def setDirection(self, dir):
-		self.direction = dir
+	def setDirection(self, direction):
+		self.direction = direction
 		for observer in self.observers:
 			observer.directionChanged(self)
 
-	def toRadians(self, angle):
-		#returns orientation in radians
-		return angle * PI / 180.0
-
-	def toDegrees(self, angle):
-		return angle * 180 / PI
-
-	def fireProj(self, pos):
-		proj = Projectile(self.rect.center, self.worldPos, pos, 0, self.seconds)
+	def fireProj(self):
+		proj = Projectile(self.rect.center, self.body.position, self.orientation, 0, self.seconds)
 		self.manager.addProjectile(proj)
 		#for observer in self.observers:
 			#observer.createProjectile(proj)

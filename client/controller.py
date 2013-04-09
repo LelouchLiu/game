@@ -21,7 +21,7 @@ class PlayerController(object):
 		if event.type == MOUSEBUTTONDOWN:
 			keys = pygame.mouse.get_pressed()
 			if keys[0]: #left
-				pass
+				self.player.fireProj()
 			elif keys[1]: #right
 				pass
 

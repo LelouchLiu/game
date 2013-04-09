@@ -1,18 +1,24 @@
 import os
 import copy
 import pygame
+import pymunk
 from math import sin,cos,sqrt
-from vector import *
+from pymunk import Vec2d
 
 class Projectile(pygame.sprite.Sprite):
 	
 	#temporary values
-	speed = 50
+	velocity = 200
 	dmg = 10
-	projRange = 200
+	maxRange = 200
+	maxVel = 200
+	mass = 10
+	width = 20
+	height = 5
+	elasticity = 0.65
 
-	#wfriendlyFire=false won't hurt player true:will, vice versa for creeps,
-	def __init__(self, rectPos, worldPos, targetPos, friendlyFire, seconds):
+	#friendlyFire=false won't hurt player, true:will 
+	def __init__(self, rectPos, worldPos, orientation, friendlyFire, seconds):
 		pygame.sprite.Sprite.__init__(self)
 		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/arrow.png"
 		self.image = pygame.image.load(imgPath)
@@ -20,49 +26,38 @@ class Projectile(pygame.sprite.Sprite):
 		self.rect.center = rectPos
 		self.rect.inflate(-3,-2)
 		self.initPos = self.worldPos = worldPos
-		self.getVector(targetPos)
 		self.friendlyFire = friendlyFire
 		self.seconds = seconds
 		self.lastDirectionChange = seconds()
-	
-	def updatePos(self):
-		now = self.seconds()
-		elapsedTime = now - self.lastDirectionChange
-		self.lastDirectionChange = self.seconds()
-		magnitude = elapsedTime * self.speed
-		self.worldPos[0] += int(self.vector.x * magnitude * self.speed)
-		self.worldPos[1] += int(self.vector.y * magnitude * self.speed)
-		
-		#temporary
-		self.rect.center = self.worldPos
-		
-		if self.distanceTraveled() >= self.projRange:
-			return False
-		else:
-			return self.worldPos
-					
-	#returns how far the projectile has traveled thus far	
+		self.vector = Vec2d(cos(orientation), sin(orientation))
+		print self.vector
+
+		#pymunk initializations
+		self.inertia = pymunk.moment_for_box(self.mass, self.width, self.height) #mass, width, height
+		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
+		self.shape = pymunk.Poly.create_box(self.body, (self.width, self.height))
+		self.body.position = pymunk.Vec2d(worldPos[0], worldPos[1])
+		self.body._set_velocity_limit(self.maxVel)
+		self.shape.elasticity = self.elasticity
+		self.applyForce()
+
+
+	#Apply the intial thrust force to object
+	def applyForce(self):	
+		#thrust = self.velocity * -self.vector.y
+		thrust = self.velocity
+		force = pymunk.Vec2d(thrust * self.vector.x, thrust * self.vector.y)
+		offset = [0, 0]
+		self.body.apply_force(force, r=offset)
+
+	#Returns true if projectile has traveled its maximum range thus far	
 	def distanceTraveled(self):
 		xd = self.worldPos[0] - self.initPos[0]
 		yd = self.worldPos[1] - self.initPos[1]
-		return sqrt(xd * xd + yd * yd)
+		if sqrt(xd * xd + yd * yd) >= self.maxRange:
+			return True
+		return False
 			
 	def rotate(self):
+		#Why do I use 57 again? Figure that one out lol
 		self.image = pygame.transform.rotate(self.image, 57 * direction(self.vector.x,-self.vector.y))
-		
-	def getVector(self, target):
-		xd = target[0] - self.rect.center[0]
-		yd = target[1] - self.rect.center[1]
-		if xd != 0 and yd!= 0:
-			self.vector = Vector((xd / sqrt(xd*xd + yd*yd)), (yd / sqrt(xd*xd + yd*yd)))
-		else:
-			if xd == 0:
-				if yd < 0:
-					self.vector = Vector(0,-1)
-				elif yd > 0:
-					self.vector = Vector(0,1)
-			elif yd == 0:
-				if xd < 0:
-					self.vector = Vector(-1,0)
-				elif xd > 0:
-					self.vector = Vector(1,0)
