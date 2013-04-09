@@ -116,8 +116,9 @@ class Window(object):
 	def stop(self):
 		#Stop updating this window and handling events for it.
 		self.environment.stop()
-		pygame.quit()
-		sys.exit()
+		self.clock.stop()
+		
+		#sys.exit()
 		
 
 	def playerCreated(self, player):

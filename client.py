@@ -36,7 +36,8 @@ def run(host, port):
 	a.addCallback(lambda ignored: reactor.stop())
 	#reactor.connectTCP(host, port, client)
 	client.reactor.run()
-	
+	pygame.quit()
+	sys.exit()
 
 if __name__ == '__main__':
     main()

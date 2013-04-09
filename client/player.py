@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
 	
 	#Constants for now...
 	thrust = 250
-	rotationSpeed = 10
+	rotationSpeed = 5
 	maxVel = 200
 	mass = 100
 	width = height = 30
@@ -88,7 +88,7 @@ class Player(pygame.sprite.Sprite):
 		#print angle
 		#self.image = pygame.transform.rotate(self.image, angle)
 		self.rect.center = (pos.x, pos.y)
-		print self.rect.center
+		#print self.rect.center
 		
 		for observer in self.observers:
 			observer.posChanged(self)
