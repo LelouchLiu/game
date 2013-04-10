@@ -3,6 +3,7 @@ import pygame
 import view
 import pymunk
 import copy
+from twisted.internet import reactor
 from pymunk import Vec2d
 from projectile import *
 
@@ -14,7 +15,7 @@ class Player(pygame.sprite.Sprite):
 	rotationSpeed = 0.087 #~5 degrees
 	maxVel = 200
 	mass = 10
-	width = height = 30
+	width = height = 20
 	elasticity = 0.65
 
 	def __init__(self, position, seconds, resolution):
@@ -29,13 +30,15 @@ class Player(pygame.sprite.Sprite):
 		self.seconds = seconds
 		self.observers = []
 		self.orientation = 0
+		self.coolDowns = [False]
 
 		#pymunk initializations
-		self.inertia = pymunk.moment_for_box(self.mass, self.width, self.height) #mass, width, height
+		self.inertia = pymunk.moment_for_circle(self.mass, 0, self.width) #mass, width, height
 		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
-		self.shape = pymunk.Poly.create_box(self.body, (self.width, self.height))
+		self.shape = pymunk.Circle(self.body, self.width)
 		self.body.position = pymunk.Vec2d(position[0], position[1])
 		self.body._set_velocity_limit(self.maxVel)
+		self.body._set_angular_velocity_limit(0)
 		self.shape.elasticity = self.elasticity
 
 	#center the player when resolution is set/changed
@@ -54,8 +57,18 @@ class Player(pygame.sprite.Sprite):
 		for observer in self.observers:
 			observer.directionChanged(self)
 
-	def fireProj(self):
-		proj = Projectile(self.rect.center, self.body.position, self.orientation, 0, self.seconds)
-		self.manager.addProjectile(proj)
+	def resetCoolDown(self, identifier=None):
+		self.coolDowns[identifier] = False
+
+	#fire projectile of given id
+	def fireProj(self, identifier):
+		#need to fire projectile in front of player
+		if not self.coolDowns[identifier]:
+			x = self.body.position[0] + (cos(self.orientation) * (self.width + 2))
+			y = self.body.position[1] + (sin(self.orientation) * (self.height + 2))
+			proj = Projectile([x, y], [x, y], self.orientation, 0, self.seconds, identifier)
+			self.manager.addProjectile(proj)
+			self.coolDowns[identifier] = True
+			reactor.callLater(.25, self.resetCoolDown, identifier=identifier)
 		#for observer in self.observers:
 			#observer.createProjectile(proj)

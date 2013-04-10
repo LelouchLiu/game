@@ -16,6 +16,7 @@ class Window(object):
 
 	screen = None
 	FPS = 60
+	debug = True
 
 	#Intialize window object, anything initialzed to none is updated at a later time
 	def __init__(self, environment, resolution, clock=reactor, event=pygame.event):
@@ -38,7 +39,8 @@ class Window(object):
 		self.drawPlayers()
 		self.dynamicSprites.draw(self.screen)
 		self.staticSprites.draw(self.screen)
-		draw_space(self.screen, self.manager.space) #pymunk space
+		if self.debug:
+			draw_space(self.screen, self.manager.space) #pymunk space
 		pygame.display.flip()
 		self.dynamicSprites.empty()
 

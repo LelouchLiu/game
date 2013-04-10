@@ -24,6 +24,7 @@ class Manager():
 		self.resolution = None
 		self.space = pymunk.Space()
 		self.createSpace()
+		self.clock = pygame.time.Clock()
 
 
 	#temporary set-up
@@ -38,12 +39,14 @@ class Manager():
 		self.space.add(staticLines)
 		
 	def update(self):
+		#self.getFPS()
 		self.updatePlayers()
 		self.updateProjectiles()
 		self.space.step(1.0/60)
 
 	def updatePlayers(self):
 		for obj in self.players:
+			
 			self.updateObjPos(obj)
 			self.updateObjRot(obj)	
 
@@ -85,6 +88,10 @@ class Manager():
 		#for observer in obj.observers:
 			#observer.posChanged(obj)
 		
+	def getFPS(self):
+		self.clock.tick()
+		print "FPS ", self.clock.get_fps()
+
 	def addClient(self, client):
 		self.client = client
 		
@@ -106,7 +113,6 @@ class Manager():
 		return -y + self.resolution[1]
 
 	def toRadians(self, angle):
-	#returns orientation in radians
 		return angle * pi / 180.0
 
 	def toDegrees(self, angle):
