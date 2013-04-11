@@ -13,8 +13,7 @@ class Projectile(pygame.sprite.Sprite):
 	maxRange = 200
 	maxVel = 200
 	mass = 10
-	width = 20
-	height = 5
+	radius = 10
 	elasticity = 0.9
 
 	#friendlyFire=false won't hurt player, true:will 
@@ -26,16 +25,17 @@ class Projectile(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()	
 		self.rect.center = rectPos
 		self.rect.inflate(-3,-2)
-		self.initPos = self.worldPos = worldPos
+		self.worldPos = self.lastPos = worldPos
+		self.distTraveled = 0
 		self.friendlyFire = friendlyFire
 		self.seconds = seconds
-		self.lastDirectionChange = seconds()
+		#self.lastDirectionChange = seconds()
 		self.vector = Vec2d(cos(orientation), sin(orientation))
 
 		#pymunk initializations
-		self.inertia = pymunk.moment_for_box(self.mass, self.width, self.height) #mass, width, height
+		self.inertia = pymunk.moment_for_circle(self.mass, 0, self.radius) #mass, width, height
 		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
-		self.shape = pymunk.Poly.create_box(self.body, (self.width, self.height))
+		self.shape = pymunk.Circle(self.body, self.radius)
 		self.body.position = pymunk.Vec2d(worldPos[0], worldPos[1])
 		self.body._set_velocity_limit(self.maxVel)
 		#self.body._set_angular_velocity_limit(0)
@@ -53,12 +53,13 @@ class Projectile(pygame.sprite.Sprite):
 
 	#Returns true if projectile has traveled its maximum range thus far	
 	def distanceTraveled(self):
-		xd = self.worldPos[0] - self.initPos[0]
-		yd = self.worldPos[1] - self.initPos[1]
-		if sqrt(xd * xd + yd * yd) >= self.maxRange:
+		xd = self.worldPos[0] - self.lastPos[0]
+		yd = self.worldPos[1] - self.lastPos[1]
+		self.distTraveled = sqrt(xd * xd + yd * yd)
+		if self.distTraveled > self.range:
 			return True
 		return False
-			
+
 	def rotate(self):
 		#Why do I use 57 again? Figure that one out lol
 		self.image = pygame.transform.rotate(self.image, 57 * direction(self.vector.x,-self.vector.y))

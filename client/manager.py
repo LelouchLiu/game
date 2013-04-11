@@ -26,7 +26,6 @@ class Manager():
 		self.createSpace()
 		self.clock = pygame.time.Clock()
 
-
 	#temporary set-up
 	def createSpace(self):
 		staticLines = [pymunk.Segment(self.space.static_body, (50, 50), (50, 550), 5),
@@ -54,9 +53,9 @@ class Manager():
 		for proj in self.projectiles:
 			pos = proj.body.position
 			proj.rect.center = (pos.x, self.flipy(pos.y))
-			#self.updateObjPos(proj)
+			proj.worldPos = (pos.x, self.flipy(pos.y))
 			if proj.distanceTraveled():	
-				proj.kill()
+				self.removeProjectile(proj)
 
 	#update object rotation
 	def updateObjRot(self, obj):
@@ -88,16 +87,10 @@ class Manager():
 		#for observer in obj.observers:
 			#observer.posChanged(obj)
 		
-	def getFPS(self):
-		self.clock.tick()
-		print "FPS ", self.clock.get_fps()
-
 	def addClient(self, client):
 		self.client = client
 		
 	def addPlayer(self, player):
-		#self.players[id(player)] = player
-		#player.id = id(player)
 		self.players.append(player)
 		self.space.add(player.body, player.shape)
 
@@ -107,6 +100,10 @@ class Manager():
 	def addProjectile(self, proj):
 		self.projectiles.add(proj)
 		self.space.add(proj.body, proj.shape)
+
+	def removeProjectile(self, proj):
+		proj.kill()
+		self.space.remove(proj.body, proj.shape)
 
 	def flipy(self, y):
 	#Used to flip y coordinate, pymunk and pygame are inverted :/
@@ -118,3 +115,6 @@ class Manager():
 	def toDegrees(self, angle):
 		return angle * 180 / pi
 			
+	def getFPS(self):
+		self.clock.tick()
+		print "FPS ", self.clock.get_fps()

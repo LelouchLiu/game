@@ -25,7 +25,7 @@ class Player(pygame.sprite.Sprite):
 		self.image = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()
 		self.rect.center = self.worldPos = position
-		self.lastDirectionChange = seconds()
+		#self.lastDirectionChange = seconds()
 		self.direction= Vec2d(0,-1)
 		self.seconds = seconds
 		self.observers = []
@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
 		self.coolDowns = [False]
 
 		#pymunk initializations
-		self.inertia = pymunk.moment_for_circle(self.mass, 0, self.width) #mass, width, height
+		self.inertia = pymunk.moment_for_circle(self.mass, 0, self.width)
 		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
 		self.shape = pymunk.Circle(self.body, self.width)
 		self.body.position = pymunk.Vec2d(position[0], position[1])
