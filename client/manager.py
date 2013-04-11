@@ -52,6 +52,7 @@ class Manager():
 	def updateProjectiles(self):
 		for proj in self.projectiles:
 			pos = proj.body.position
+			proj.lastPos = copy.deepcopy(proj.worldPos)
 			proj.rect.center = (pos.x, self.flipy(pos.y))
 			proj.worldPos = (pos.x, self.flipy(pos.y))
 			if proj.distanceTraveled():	

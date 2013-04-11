@@ -24,8 +24,9 @@ class Projectile(pygame.sprite.Sprite):
 		self.image = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()	
 		self.rect.center = rectPos
-		self.rect.inflate(-3,-2)
-		self.worldPos = self.lastPos = worldPos
+		#self.rect.inflate(-3,-2)
+		self.worldPos =  worldPos
+		self.lastPos = worldPos
 		self.distTraveled = 0
 		self.friendlyFire = friendlyFire
 		self.seconds = seconds
@@ -42,6 +43,8 @@ class Projectile(pygame.sprite.Sprite):
 		self.shape.elasticity = self.elasticity
 		self.applyForce()
 
+		print self.worldPos
+
 
 	#Apply the intial thrust force to object
 	def applyForce(self):	
@@ -56,7 +59,7 @@ class Projectile(pygame.sprite.Sprite):
 		xd = self.worldPos[0] - self.lastPos[0]
 		yd = self.worldPos[1] - self.lastPos[1]
 		self.distTraveled = sqrt(xd * xd + yd * yd)
-		if self.distTraveled > self.range:
+		if self.distTraveled > self.maxRange:
 			return True
 		return False
 

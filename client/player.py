@@ -65,7 +65,7 @@ class Player(pygame.sprite.Sprite):
 		#need to fire projectile in front of player
 		if not self.coolDowns[identifier]:
 			x = self.body.position[0] + (cos(self.orientation) * (self.width + 2))
-			y = self.body.position[1] + (sin(self.orientation) * (self.height + 2))
+			y = self.body.position[1] + (-sin(self.orientation) * (self.height + 2))
 			proj = Projectile([x, y], [x, y], self.orientation, 0, self.seconds, identifier)
 			self.manager.addProjectile(proj)
 			self.coolDowns[identifier] = True
