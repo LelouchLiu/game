@@ -1,16 +1,19 @@
 #Taken from pygame wiki http://pygame.org/wiki/Spritesheet
 # Note: When calling images_at the rect is the format:
 # (x, y, x + offset, y + offset)
- 
+import os
 import pygame
  
 class spritesheet(object):
-	def __init__(self, filename):
+	def __init__(self, fileName):
+		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/"
+		imgPath += fileName
 		try:
-			self.sheet = pygame.image.load(filename).convert()
+			self.sheet = pygame.image.load(imgPath).convert()
 		except pygame.error, message:
-			print 'Unable to load spritesheet image:', filename
+			print 'Unable to load spritesheet image:', imgPath
 			raise SystemExit, message
+
 	# Load a specific image from a specific rectangle
 	def image_at(self, rectangle, colorkey = None):
 		"Loads image from x,y,x+offset,y+offset"
@@ -22,10 +25,12 @@ class spritesheet(object):
 				colorkey = image.get_at((0,0))
 			image.set_colorkey(colorkey, pygame.RLEACCEL)
 		return image
+
 	# Load a whole bunch of images and return them as a list
 	def images_at(self, rects, colorkey = None):
 		"Loads multiple images, supply a list of coordinates" 
 		return [self.image_at(rect, colorkey) for rect in rects]
+
 	# Load a whole strip of images
 	def load_strip(self, rect, image_count, colorkey = None):
 		"Loads a strip of images and returns them as a list"

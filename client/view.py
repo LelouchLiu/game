@@ -49,10 +49,15 @@ class Window(object):
 		for proj in self.manager.projectiles:
 			#add collision shit here and move projectile accordingly to player view
 			self.dynamicSprites.add(proj)
+
 	def drawPlayers(self):
-		#draw players inside client.camera
-		pass
-				
+		self.dynamicSprites.add(self.client)
+		if not self.client.isAlive():
+			self.client.image = self.client.sprites['death'].next()	
+			oldPos = copy.deepcopy(self.client.rect.center)
+			self.client.rect = self.client.image.get_rect()
+			self.client.rect.center = oldPos
+
 	def drawLevel(self):
 		pass
 		#self.level.draw(self.screen, self.client.camera)
@@ -65,7 +70,7 @@ class Window(object):
 		self.manager = Manager(self.client.seconds)
 		self.manager.addPlayer(self.client)
 		self.manager.addClient(self.client)
-		self.manager.resolution = self.resolution
+		self.manager.setResolution(self.resolution)
 		
 		#self.level.manager = self.manager
 		#self.level.screen = self.screen
@@ -96,11 +101,10 @@ class Window(object):
 		#Show this window.
 		#return: A Deferred that fires when this window is closed by the user.
 		pygame.init()
-	
 		self.screen = pygame.display.set_mode(self.resolution)
-		self.staticSprites.add(self.client)
+		#self.staticSprites.add(self.client)
 		self.createLevel()
-		
+		self.setSprites()
 		self._renderCall = LoopingCall(self.paint)
 		self._renderCall.start(1 / self.FPS, now=False)
 		self._updateCall = LoopingCall(self.manager.update)
@@ -112,14 +116,14 @@ class Window(object):
 		finishedDeferred.addCallback(lambda ign: pygame.display.quit())
 		return finishedDeferred
 		
+	def setSprites(self):
+		self.client.setSprites()
+
 	def stop(self):
 		#Stop updating this window and handling events for it.
 		self.environment.stop()
 		self.clock.stop()
 		
-		#sys.exit()
-		
-
 	def playerCreated(self, player):
 		self.sprites.add(player)
 		self.manager.addPlayer(player)
@@ -127,12 +131,3 @@ class Window(object):
 	def playerRemoved(self, player):
 		view = self._playerViews.pop(player)
 		self.sprites.remove(player)
-		#sel.scene._items.remove(view)
-
-
-class PlayerView():
-
-	def paint(self):	
-		position = self.player.getPosition()
-			
-

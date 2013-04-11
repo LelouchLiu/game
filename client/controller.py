@@ -26,11 +26,11 @@ class PlayerController(object):
 
 	def handleEvent(self, event):
 		if event.type == MOUSEBUTTONDOWN:
+			self.player.alive = not self.player.alive
 			#keys = pygame.mouse.get_pressed()
 			#if keys[0]: #left
 		#		self.player.fireProj()
 			#elif keys[1]: #right
-			pass
 
 	#Calculate direction given pressed keys
 	def calculateDirection(self, keys):

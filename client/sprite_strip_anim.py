@@ -1,6 +1,6 @@
 #Taken from pygame wiki http://pygame.org/wiki/Spritesheet
 
-import spritesheet
+import sprite_sheet
  
 class SpriteStripAnim(object):
     """sprite strip animator
@@ -22,7 +22,7 @@ class SpriteStripAnim(object):
         the iterator advances to the next image.
         """
         self.filename = filename
-        ss = spritesheet.spritesheet(filename)
+        ss = sprite_sheet.spritesheet(filename)
         self.images = ss.load_strip(rect, count, colorkey)
         self.i = 0
         self.loop = loop

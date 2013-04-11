@@ -7,6 +7,8 @@ from twisted.internet import reactor
 from pymunk import Vec2d
 from projectile import *
 
+import sprite_sheet
+from sprite_strip_anim import SpriteStripAnim
 
 class Player(pygame.sprite.Sprite):
 	
@@ -24,22 +26,33 @@ class Player(pygame.sprite.Sprite):
 		self.origImage = pygame.image.load(imgPath)
 		self.image = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()
-		self.rect.center = self.worldPos = position
-		#self.lastDirectionChange = seconds()
+		self.rect.center = position
 		self.direction= Vec2d(0,-1)
 		self.seconds = seconds
 		self.observers = []
 		self.orientation = 0
 		self.coolDowns = [False]
+		self.resolution = resolution
+		self._setPhysics(position)
+		self.alive = True
 
-		#pymunk initializations
+	#pymunk init
+	def _setPhysics(self, pos):
 		self.inertia = pymunk.moment_for_circle(self.mass, 0, self.width)
 		self.body = pymunk.Body(self.mass,  self.inertia) #Mass, Moment of inertia
 		self.shape = pymunk.Circle(self.body, self.width)
-		self.body.position = pymunk.Vec2d(position[0], position[1])
+		self.body.position = pymunk.Vec2d(pos[0], self.flipy(pos[1]))
 		self.body._set_velocity_limit(self.maxVel)
 		self.body._set_angular_velocity_limit(0)
 		self.shape.elasticity = self.elasticity
+
+	#sprite init
+	def setSprites(self):
+		frames = 60 / 6
+		self.sprites = {'death': SpriteStripAnim('explode.bmp', (0,0,24,24), 8, 1, True, frames)}
+
+	def isAlive(self):
+		return self.alive
 
 	#center the player when resolution is set/changed
 	def center(self, resolution):
@@ -65,10 +78,15 @@ class Player(pygame.sprite.Sprite):
 		#need to fire projectile in front of player
 		if not self.coolDowns[identifier]:
 			x = self.body.position[0] + (cos(self.orientation) * (self.width + 2))
-			y = self.body.position[1] + (-sin(self.orientation) * (self.height + 2))
-			proj = Projectile([x, y], [x, y], self.orientation, 0, self.seconds, identifier)
+			y = (self.body.position[1] + (sin(self.orientation) * (self.height + 2)))
+			proj = Projectile([x, self.flipy(y)], [x, y], self.orientation, 
+								0, self.seconds, identifier)
 			self.manager.addProjectile(proj)
 			self.coolDowns[identifier] = True
 			reactor.callLater(.25, self.resetCoolDown, identifier=identifier)
 		#for observer in self.observers:
 			#observer.createProjectile(proj)
+
+	#Used to flip y coordinate, pymunk and pygame are inverted :/
+	def flipy(self, y):
+		return -y + self.resolution[1]

@@ -52,11 +52,11 @@ class Manager():
 	def updateProjectiles(self):
 		for proj in self.projectiles:
 			pos = proj.body.position
-			proj.lastPos = copy.deepcopy(proj.worldPos)
 			proj.rect.center = (pos.x, self.flipy(pos.y))
-			proj.worldPos = (pos.x, self.flipy(pos.y))
+			#proj.rotate()
 			if proj.distanceTraveled():	
 				self.removeProjectile(proj)
+			proj.lastPos = [pos.x, pos.y]	
 
 	#update object rotation
 	def updateObjRot(self, obj):
@@ -106,6 +106,7 @@ class Manager():
 		proj.kill()
 		self.space.remove(proj.body, proj.shape)
 
+
 	def flipy(self, y):
 	#Used to flip y coordinate, pymunk and pygame are inverted :/
 		return -y + self.resolution[1]
@@ -119,3 +120,6 @@ class Manager():
 	def getFPS(self):
 		self.clock.tick()
 		print "FPS ", self.clock.get_fps()
+
+	def setResolution(self, resolution):
+		self.resolution = resolution
