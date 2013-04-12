@@ -22,7 +22,7 @@ def main():
 		environment = Environment(100, reactor)
 		environment.start()
 		window = Window(environment, resolution)
-		player = Player([200,200], environment.seconds, resolution)
+		player = Player([200,200],[200,200], environment.seconds, resolution)
 		window.client = player
 		window.submitTo(PlayerController(player))
 		window.go()
