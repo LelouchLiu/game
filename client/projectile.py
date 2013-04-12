@@ -2,37 +2,31 @@ import os
 import copy
 import pygame
 import pymunk
-from math import sin,cos,sqrt
+from physical import Physical
 from pymunk import Vec2d
+from math import sqrt
 
-class Projectile(pygame.sprite.Sprite, Entity):
+class Projectile(pygame.sprite.Sprite, Physical):
 	
-	#temporary values
-	velocity = 70
 	dmg = 10
-	maxRange = 600
-	maxVel = 200
-	mass = 10
-	radius = 10
-	elasticity = 0.9
-
+	maxRange = 500
 	#friendlyFire=false won't hurt player, true:will 
 	def __init__(self, rectPos, bodyPos, orientation, friendlyFire, seconds, identifier):
 		pygame.sprite.Sprite.__init__(self)
+		Physical.__init__(self, bodyPos, orientation, velocity=70, 
+								mass=10, elasticity=0.9, shape={"circle": 10}, maxVel=200)
 		self.identifier = identifier
 		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/arrow.png"
 		self.image = pygame.image.load(imgPath)
-		self.origImage = pygame.image.load(imgPath)
+		#self.origImage = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()	
 		self.rect.center = rectPos
 		self.lastPos = bodyPos
-		self.bodyPos = bodyPos
 		self.distTraveled = 0
 		self.friendlyFire = friendlyFire
 		self.seconds = seconds
-		self.vector = Vec2d(cos(orientation), sin(orientation))
+		
 		#self.rotate(orientation)
-		#self._setPhysics()
 		self.applyImpulse()
 
 

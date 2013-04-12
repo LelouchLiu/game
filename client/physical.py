@@ -1,15 +1,13 @@
 #An entity that is collidable, movable, rotatable
 import pymunk
-from projectile import Projectile
-from math import sin,cos,sqrt
 from pymunk import Vec2d
-
+from math import sin,cos,sqrt
 class Physical():
 	#orientation - angle body is facing in radians
 	#shape - {"rectange": (width, height)}  or {"circle": radius}
 	#resolution - screen resolution 
 	#angularVel - used for player turning speed, radians per update
-	def __init__(self, worldPos, orientation, velocity, mass, elasticity, shape, maxVel, resolution, angularVel=None):
+	def __init__(self, worldPos, orientation, velocity, mass, elasticity, shape, maxVel, angularVel=None):
 		self.orientation = orientation
 		self.velocity = velocity
 		self.mass = mass
@@ -41,26 +39,9 @@ class Physical():
 		self.shape.elasticity = self.elasticity
 
 	#Applies the initial impulse from velocity * 100
-	def applyImpulse(self, impulse):
+	def applyImpulse(self):
 		thrust = self.velocity
 		force = pymunk.Vec2d(100 * thrust * self.vector.x, 100 *thrust * self.vector.y)
 		offset = [0, 0]
 		self.body.apply_impulse(force, r=offset)
 
-	#fire projectile of given id
-	def fireProj(self, identifier):
-		#need to fire projectile in front of entity
-		if not self.coolDowns[identifier]:
-			x = self.body.position[0] + (cos(self.orientation) * (self.radius + 2))
-			y = (self.body.position[1] + (sin(self.orientation) * (self.radius + 2)))
-			proj = Projectile([x, self.flipy(y)], [x, y], self.orientation, 
-								0, self.seconds, identifier)
-			self.manager.addProjectile(proj)
-			self.coolDowns[identifier] = True
-			reactor.callLater(.25, self.resetCoolDown, identifier=identifier)
-		#for observer in self.observers:
-			#observer.createProjectile(proj)
-
-	#Used to flip y coordinate, pymunk and pygame are inverted :/
-	def flipy(self, y):
-		return -y + self.resolution[1]

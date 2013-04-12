@@ -62,7 +62,7 @@ class Manager():
 	def updateObjRot(self, obj):
 		#update objects orientation to current body orientation. Commented out for now
 		#obj.orientation = obj.toDegrees(obj.body._get_angle())
-		obj.orientation += -obj.direction[0] * obj.rotationSpeed
+		obj.orientation += -obj.direction[0] * obj.angularVel
 		if obj.orientation > (2 * pi):
 			obj.orientation -= (2 * pi)
 		elif obj.orientation < 0:
