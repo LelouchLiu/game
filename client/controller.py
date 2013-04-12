@@ -19,17 +19,12 @@ class PlayerController(object):
 			arg = self.keyMap['K_SPACE'][1]
 			function(arg)
 
-
-	#def mouseButton(self, position):
-	#	self.player.fireProj(position, None)
-		
-
 	def handleEvent(self, event):
 		if event.type == MOUSEBUTTONDOWN:
 			self.player.alive = not self.player.alive
 			#keys = pygame.mouse.get_pressed()
 			#if keys[0]: #left
-		#		self.player.fireProj()
+			#self.player.fireProj()
 			#elif keys[1]: #right
 
 	#Calculate direction given pressed keys

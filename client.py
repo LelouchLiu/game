@@ -34,7 +34,6 @@ def run(host, port, res):
 	a = client.start(host,port)
 	a.addErrback(log.err, "Server Error")
 	a.addCallback(lambda ignored: reactor.stop())
-	#reactor.connectTCP(host, port, client)
 	client.reactor.run()
 	pygame.quit()
 	sys.exit()

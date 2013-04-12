@@ -26,6 +26,7 @@ class Manager():
 		self.createSpace()
 		self.clock = pygame.time.Clock()
 
+
 	#temporary set-up
 	def createSpace(self):
 		staticLines = [pymunk.Segment(self.space.static_body, (50, 50), (50, 550), 5),
@@ -36,7 +37,19 @@ class Manager():
 			line.elasticity = .95
 
 		self.space.add(staticLines)
+		#self.defineCollisionHandlers()
+
+	#Set up collision handlers
+	def defineCollisionHandlers(self):
+		#collisions between a & b, 
+		self.collisionTypes = {'static': 0, 'player': 1, 'projectile': 2, 'creep': 3}
+		self.space.add_collision_handler(self.client.identifier, self.collisionTypes['projectile'], post_solve = self.playerCollision)
 		
+
+	def playerCollision(self, space, arbiter):
+		for shape in arbiter.shapes:
+			print shape.collision_type
+
 	def update(self):
 		#self.getFPS()
 		self.updatePlayers()
@@ -44,10 +57,8 @@ class Manager():
 		self.space.step(1.0/60)
 
 	def updatePlayers(self):
-		for obj in self.players:
-			
-			self.updateObjPos(obj)
-			self.updateObjRot(obj)	
+		for player in self.players:
+			player.updatePos()
 
 	def updateProjectiles(self):
 		for proj in self.projectiles:
@@ -58,36 +69,7 @@ class Manager():
 				self.removeProjectile(proj)
 			proj.lastPos = [pos.x, pos.y]	
 
-	#update object rotation
-	def updateObjRot(self, obj):
-		#update objects orientation to current body orientation. Commented out for now
-		#obj.orientation = obj.toDegrees(obj.body._get_angle())
-		obj.orientation += -obj.direction[0] * obj.angularVel
-		if obj.orientation > (2 * pi):
-			obj.orientation -= (2 * pi)
-		elif obj.orientation < 0:
-			obj.orientation += (2 * pi)
-		oldPos = copy.deepcopy(obj.rect.center)
-		obj.image = pygame.transform.rotate(obj.origImage, self.toDegrees(obj.orientation))
-		obj.rect = obj.image.get_rect(center=oldPos)
-		obj.body._set_angle(obj.orientation)
 
-	#update object position
-	def updateObjPos(self, obj):
-		x = cos(obj.orientation)
-		y = sin(obj.orientation)
-		thrust = obj.velocity * -obj.direction[1]
-		force = pymunk.Vec2d(thrust * x, thrust * y)
-
-		#TODO: figure out the offset behind the ship. see if it is any different
-		offset = [0, 0]
-		obj.body.apply_impulse(force, r=offset)
-		pos = obj.body.position
-		obj.rect.center = (pos.x, self.flipy(pos.y))
-
-		#for observer in obj.observers:
-			#observer.posChanged(obj)
-		
 	def addClient(self, client):
 		self.client = client
 		
@@ -110,12 +92,6 @@ class Manager():
 	def flipy(self, y):
 	#Used to flip y coordinate, pymunk and pygame are inverted :/
 		return -y + self.resolution[1]
-
-	def toRadians(self, angle):
-		return angle * pi / 180.0
-
-	def toDegrees(self, angle):
-		return angle * 180 / pi
 			
 	def getFPS(self):
 		self.clock.tick()

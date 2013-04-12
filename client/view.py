@@ -39,8 +39,8 @@ class Window(object):
 		self.drawPlayers()
 		self.dynamicSprites.draw(self.screen)
 		self.staticSprites.draw(self.screen)
-		if self.debug:
-			draw_space(self.screen, self.manager.space) #pymunk space
+		if self.debug: #pymunk space
+			draw_space(self.screen, self.manager.space) 
 		pygame.display.flip()
 		self.dynamicSprites.empty()
 
@@ -53,10 +53,7 @@ class Window(object):
 	def drawPlayers(self):
 		self.dynamicSprites.add(self.client)
 		if not self.client.isAlive():
-			self.client.image = self.client.sprites['death'].next()	
-			oldPos = copy.deepcopy(self.client.rect.center)
-			self.client.rect = self.client.image.get_rect()
-			self.client.rect.center = oldPos
+			self.client.playAnim("death")
 
 	def drawLevel(self):
 		pass
