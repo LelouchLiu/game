@@ -26,6 +26,7 @@ class Manager():
 		self.createSpace()
 		self.clock = pygame.time.Clock()
 
+		self.collisionTypes = {'static': 0, 'player': 1, 'projectile': 2, 'creep': 3}
 
 	#temporary set-up
 	def createSpace(self):
@@ -38,17 +39,14 @@ class Manager():
 
 		self.space.add(staticLines)
 		#self.defineCollisionHandlers()
-
-	#Set up collision handlers
-	def defineCollisionHandlers(self):
-		#collisions between a & b, 
-		self.collisionTypes = {'static': 0, 'player': 1, 'projectile': 2, 'creep': 3}
-		self.space.add_collision_handler(self.client.identifier, self.collisionTypes['projectile'], post_solve = self.playerCollision)
 		
+	def addCollisionHandler(self, player):
+		self.space.add_collision_handler(self.client.identifier, 
+										self.collisionTypes['projectile'], post_solve = self.playerCollision)
 
+	#only checking client for now
 	def playerCollision(self, space, arbiter):
-		for shape in arbiter.shapes:
-			print shape.collision_type
+		self.client.takeDmg(100)
 
 	def update(self):
 		#self.getFPS()
@@ -72,6 +70,7 @@ class Manager():
 
 	def addClient(self, client):
 		self.client = client
+		self.addCollisionHandler(client)
 		
 	def addPlayer(self, player):
 		self.players.append(player)

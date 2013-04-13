@@ -87,6 +87,8 @@ class Window(object):
 		#Handle a single pygame input event.
 		if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_q:
 			self.stop()
+		elif event.type == pygame.KEYDOWN and event.key == pygame.K_v:
+			self.debug = not self.debug
 		else:
 			self.controller.handleEvent(event)
 							

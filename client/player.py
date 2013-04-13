@@ -11,6 +11,7 @@ class Player(Entity):
 	def __init__(self, recPos, worldPos, seconds, resolution):
 		Entity.__init__(self, recPos, worldPos, resolution, collisionType= 1)
 		self.manager = None #set in view as of now
+		self.identifier = 1 #temporary value, set by network
 		self.seconds = seconds
 
 	def setSprites(self):

@@ -27,6 +27,13 @@ class Entity(pygame.sprite.Sprite, Physical):
 		self.coolDowns = [False]
 		self.alive = True
 
+		self.hp = 100
+
+	def takeDmg(self, dmg):
+		self.hp -= dmg
+		if self.hp <= 0:
+			self.alive = False
+		print self.hp
 	def setDirection(self, direction):
 		self.direction = direction
 		#for observer in self.observers:

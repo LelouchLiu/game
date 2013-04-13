@@ -45,7 +45,7 @@ class Environment(SimulationTime):
 		
 	def setInitialPlayer(self, player):
 		self.initialPlayer = player
-
+		
 	def setNetwork(self, network):
 		#Specify a connected NetworkController instance which can be used to communicate with the server.
 		self.network = network
