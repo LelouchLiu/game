@@ -21,6 +21,7 @@ class Manager():
 		self.client = None #can refer to client or server
 		self.players = []
 		self.projectiles = pygame.sprite.Group()
+		self.creeps = []
 		self.resolution = None
 		self.space = pymunk.Space()
 		self.createSpace()
@@ -75,6 +76,9 @@ class Manager():
 	def addPlayer(self, player):
 		self.players.append(player)
 		self.space.add(player.body, player.shape)
+
+	#def addCreep(self, creep):
+
 
 	#def removePlayer(self, player):
 		#del self.players[player.id]

@@ -8,6 +8,7 @@ from twisted.python.filepath import FilePath
 from twisted.internet.task import LoopingCall
 from twisted.internet import reactor
 from manager import *
+from level import *
 import copy
 import string
 
@@ -60,7 +61,7 @@ class Window(object):
 		#self.level.draw(self.screen, self.client.camera)
 		
 	def createLevel(self):
-		#self.level = Level(self.size, None, 'level.txt')
+		self.level = Level('test.tmx')
 		#self.level = None
 		#if self.environment.network:
 		#	self.environment.network.loadLevel('level.txt')
