@@ -4,6 +4,7 @@ import sys
 from twisted.internet import reactor
 from twisted.python import log
 from client.player import *
+from client.creep import *
 from client.environment import Environment
 from client.ui import *
 sys.path.append('data')
@@ -23,6 +24,7 @@ def main():
 		environment.start()
 		window = Window(environment, resolution)
 		player = Player([200,200],[200,200], environment.seconds, resolution)
+		#creep = Creep([200,200],[200,200], environment.seconds, resolution)
 		window.client = player
 		window.submitTo(PlayerController(player))
 		window.go()
