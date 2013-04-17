@@ -12,23 +12,37 @@ class Level():
 		self._parse()
 
 	def _parse(self):
+		#Tile Sets
 		for tileSet in self.dom.getElementsByTagName('tileset'):
-			tmp = TileSet(tileSet.getAttribute('firstgid'),
+			newTileSet = TileSet(tileSet.getAttribute('firstgid'),
 							tileSet.getAttribute('name'),
 							tileSet.getAttribute('tilewidth'),
 							tileSet.getAttribute('tileheight'),
 							tileSet.getAttribute('source'),
 							tileSet.getAttribute('width'),
 							tileSet.getAttribute('imageheight'))
-			self.tileSets.append(tmp)
-
+			self.tileSets.append(newTileSet)
+		#Traverse Layers
 		for layer in self.dom.getElementsByTagName('layer'):
-			print "heyeoeheyeye"
+			newLayer = Layer((layer.getAttribute('width'),layer.getAttribute('height')))
+			#Traverse each tile inside layer
+			for child in layer.childNodes:
+				print child.nodeValue
+			#for i in xrange(newLayer.size[1]):
+				#tiles = []
+				#for j in xrange(newLayer.size[0]):
+					#for tile in layer.
+				#newLayer.addTiles(tiles)
 			
 #Stores the tiles in one layer		
 class Layer:
-	def __init__(self):
+	def __init__(self, size):
 		self.tiles = []
+		self.size = size
+
+	#adds a list of tiles
+	def addTiles(self, tiles):
+		self.tiles.append(tile)
 
 #Each tile in the map
 class Tile:
