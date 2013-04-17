@@ -25,9 +25,9 @@ class Level():
 		#Traverse Layers
 		for layer in self.dom.getElementsByTagName('layer'):
 			newLayer = Layer((layer.getAttribute('width'),layer.getAttribute('height')))
-			#Traverse each tile inside layer
-			for child in layer.childNodes:
-				print child.nodeValue
+			for data in layer.getElementsByTagName('data'):
+				for tile in data.getElementsByTagName('tile'):
+					
 			#for i in xrange(newLayer.size[1]):
 				#tiles = []
 				#for j in xrange(newLayer.size[0]):
