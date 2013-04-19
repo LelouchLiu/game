@@ -9,7 +9,11 @@ class Level():
 		self.dom = parse(self.filePath)
 		#print self.dom.toxml()
 		self.tileSets = []
+		self.tiles = [] #tiles in each layer [[tiles in layer1], [...], [tiles in layerN]]
 		self._parse()
+		
+	def draw(self):
+		pass
 
 	def _parse(self):
 		#Tile Sets
@@ -18,22 +22,35 @@ class Level():
 							tileSet.getAttribute('name'),
 							tileSet.getAttribute('tilewidth'),
 							tileSet.getAttribute('tileheight'),
-							tileSet.getAttribute('source'),
+							tileSet.childNodes[1].getAttribute('source'),
 							tileSet.getAttribute('width'),
 							tileSet.getAttribute('imageheight'))
 			self.tileSets.append(newTileSet)
 		#Traverse Layers
 		for layer in self.dom.getElementsByTagName('layer'):
 			newLayer = Layer((layer.getAttribute('width'),layer.getAttribute('height')))
-			for data in layer.getElementsByTagName('data'):
-				for tile in data.getElementsByTagName('tile'):
-					
-			#for i in xrange(newLayer.size[1]):
-				#tiles = []
-				#for j in xrange(newLayer.size[0]):
-					#for tile in layer.
-				#newLayer.addTiles(tiles)
-			
+			newTiles = []
+			for tile in layer.childNodes[1].getElementsByTagName('tile'):
+				gid = tile.getAttribute('gid')
+				size = 0
+				src = self.getTileSet(gid)
+				newTiles.append(Tile(gid,size,src))
+			self.tiles.append(newTiles)
+
+		for layer in self.tiles:
+			for tile in layer:
+				print tile.gid, tile.src
+
+	#return appropriate Tile Set for grid ID, assumes tileSets are in ascending order by first grid ID
+	def getTileSet(self, gid):
+		previous = self.tileSets[0]
+		for tileSet in self.tileSets:
+			if tileSet.firstgid <= gid:
+				previous = tileSet
+			else:
+				return previous.src
+
+
 #Stores the tiles in one layer		
 class Layer:
 	def __init__(self, size):

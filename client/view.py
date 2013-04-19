@@ -60,19 +60,18 @@ class Window(object):
 		pass
 		#self.level.draw(self.screen, self.client.camera)
 		
-	def createLevel(self):
-		self.level = Level('test.tmx')
-		#self.level = None
-		#if self.environment.network:
-		#	self.environment.network.loadLevel('level.txt')
+
+	def managerInit(self):
 		self.manager = Manager(self.client.seconds)
 		self.manager.addPlayer(self.client)
 		self.manager.addClient(self.client)
 		self.manager.setResolution(self.resolution)
+		self.client.manager = self.manager
 		
+	def levelInit(self):
+		self.level = Level('test.tmx')
 		#self.level.manager = self.manager
 		#self.level.screen = self.screen
-		self.client.manager = self.manager
 			
 		
 	def handleInput(self):
@@ -103,7 +102,8 @@ class Window(object):
 		pygame.init()
 		self.screen = pygame.display.set_mode(self.resolution)
 		#self.staticSprites.add(self.client)
-		self.createLevel()
+		self.managerInit()
+		self.levelInit()
 		self.setSprites()
 		self._renderCall = LoopingCall(self.paint)
 		self._renderCall.start(1 / self.FPS, now=False)
@@ -114,6 +114,7 @@ class Window(object):
 		finishedDeferred = self._inputCall.start(.04, now=False)
 		finishedDeferred.addCallback(lambda ign: self._renderCall.stop())
 		finishedDeferred.addCallback(lambda ign: pygame.display.quit())
+		
 		return finishedDeferred
 		
 	def setSprites(self):
