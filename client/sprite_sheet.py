@@ -4,7 +4,7 @@
 import os
 import pygame
  
-class spritesheet(object):
+class SpriteSheet(object):
 	def __init__(self, fileName):
 		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/"
 		imgPath += fileName

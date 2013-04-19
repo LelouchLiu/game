@@ -36,6 +36,7 @@ class Window(object):
 	def paint(self):
 		black = 0, 0, 0
 		self.screen.fill(black)
+		self.drawLevel()
 		self.drawProjectiles()
 		self.drawPlayers()
 		self.dynamicSprites.draw(self.screen)
@@ -57,7 +58,7 @@ class Window(object):
 			self.client.playAnim("death")
 
 	def drawLevel(self):
-		pass
+		self.level.draw(self.resolution)
 		#self.level.draw(self.screen, self.client.camera)
 		
 
@@ -69,9 +70,8 @@ class Window(object):
 		self.client.manager = self.manager
 		
 	def levelInit(self):
-		self.level = Level('test.tmx')
+		self.level = Level('test.tmx', self.screen)
 		#self.level.manager = self.manager
-		#self.level.screen = self.screen
 			
 		
 	def handleInput(self):
