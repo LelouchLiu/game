@@ -44,10 +44,6 @@ class Level():
 				newTiles.append(Tile(gid,tileSet))
 			self.tiles.append(newTiles)
 
-		#for layer in self.tiles:
-		#	for tile in layer:
-			#	print tile.gid, tile.src
-
 	#return appropriate Tile Set for grid ID, assumes tileSets are in ascending order by first grid ID
 	def getTileSet(self, gid):
 		previous = self.tileSets[0]
