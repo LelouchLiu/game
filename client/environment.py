@@ -8,8 +8,8 @@ class SimulationTime(Clock):
 	#platformClock: A provider of twisted.internet.interfaces.IReactorTime which will be used to update the model time.
 	#granularity: The number of times to update the model time per second. That is, the number of "instants" per
 	#second. e.g., specifying 2 would make calls to seconds() return 0 for 0.5 seconds, then 0.5 for 0.5 seconds, then 1 for 
-	#0.5 seconds, and so on. This number directly represents the B{model} frames per second.
-	# _call: The result of the latest call to C{scheduler}.
+	#0.5 seconds, and so on. This number directly represents the model frames per second.
+	# _call: The result of the latest call to scheduler
 	_call = None
 	def __init__(self, granularity, platformClock):
 		Clock.__init__(self)
