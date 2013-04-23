@@ -4,7 +4,6 @@ from sprite_sheet import *
  
 class SpriteStripAnim(object):
     """sprite strip animator
-    
     This class provides an iterator (iter() and next() methods), and a
     __add__() method for joining strips which comes in handy when a
     strip wraps to the next row.
