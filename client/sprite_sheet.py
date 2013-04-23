@@ -1,6 +1,7 @@
 #Taken from pygame wiki http://pygame.org/wiki/Spritesheet
 # Note: When calling images_at the rect is the format:
 # (x, y, x + offset, y + offset)
+
 import os
 import pygame
  
