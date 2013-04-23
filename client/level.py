@@ -2,27 +2,29 @@
 import os
 from xml.dom.minidom import parse, parseString
 from sprite_sheet import *
-#http://wiki.python.org/moin/MiniDom
-#http://gamedev.tutsplus.com/tutorials/implementation/parsing-tiled-tmx-format-maps-in-your-own-game-engine/
+
+#python xml parsing - http://wiki.python.org/moin/MiniDom
+#tiled tutorial - http://gamedev.tutsplus.com/tutorials/implementation/parsing-tiled-tmx-format-maps-in-your-own-game-engine/
+
 class Level():
 	def __init__(self, f, screen):
 		self.filePath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + '/levels/' + f
 		self.dom = parse(self.filePath)
-		#print self.dom.toxml()
 		self.tileSets = []
-		self.tiles = [] #tiles in each layer [[tiles in layer1], [...], [tiles in layerN]]
+		self.tiles = [] #[[tiles in layer1], [...], [tiles in layerN]]
 		self._parse()
 		self.scren = screen
 		
-	def draw(self, size):
-		i = 0
-		j = 0
-		count = 1
-		for tile in self.tiles:
+	#Draw entire level at once for now, look up good optimizations and fix
+	def draw(self, screen, size):
+		for layer in self.tiles:
+			x = y = count =  0
 
-			count += 1
-			x += size[0] / tile.tileSet.tileW * count
-			y += size[1] / tile.tileSet.tileH * count
+			for tile in layer:
+				count += 1
+				x += size[0] / tile.tileSet.tileW * count
+				y += size[1] / tile.tileSet.tileH * count
+
 	def _parse(self):
 		#Tile Sets
 		for tileSet in self.dom.getElementsByTagName('tileset'):
