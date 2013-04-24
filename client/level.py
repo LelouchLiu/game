@@ -7,43 +7,55 @@ from sprite_sheet import *
 #tiled tutorial - http://gamedev.tutsplus.com/tutorials/implementation/parsing-tiled-tmx-format-maps-in-your-own-game-engine/
 
 class Level():
+	#dom: xml Data
+	#tiles: [[tiles in layer1], [...], [tiles in layerN]]
+	#size: [width, height] of level
 	def __init__(self, f, screen):
 		self.filePath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + '/levels/' + f
 		self.dom = parse(self.filePath)
 		self.tileSets = []
-		self.tiles = [] #[[tiles in layer1], [...], [tiles in layerN]]
+		self.tiles = [] 
+		self.size = None
 		self._parse()
-		self.scren = screen
+		self.draw(screen, [800,800]) 
+		self.screen = screen
 		
 	#Draw entire level at once for now, look up good optimizations and fix
 	def draw(self, screen, size):
 		for layer in self.tiles:
-			x = y = count =  0
-
+			x = y = i = j = 0
 			for tile in layer:
-				count += 1
-				x += size[0] / tile.tileSet.tileW * count
-				y += size[1] / tile.tileSet.tileH * count
-				#max x and y values
-				if x >= size[0] / tile.tileSet.tileW:
-					x = 0
-				if y >= size[0] / tile.tileSet.tileW:
-					y = 0
-
-				print x,y 
+				x = size[0] / tile.tileSet.tileW * i
+				y = size[1] / tile.tileSet.tileH * j
+				#screen.blit(tile.tileSet.src, (x,y))
+				
+				#print x,y
+				if x >= self.size[0]:
+					i = 0
+				else:
+					i += 1
+				if y >= self.size[1]:
+					j = 0
+				else:
+					j += 1
+				
 
 	def _parse(self):
+		#self.size = (self.dom.getElementsByTagName('map').getAttribute('width'),
+					#self.dom.getElementsByTagName('map').getAttribute('height'))
+
+		print self.dom.getElementsByTagName('map')
 		#Tile Sets
 		for tileSet in self.dom.getElementsByTagName('tileset'):
 			newTileSet = TileSet(tileSet.getAttribute('firstgid'),
 							tileSet.getAttribute('name'),
 							int(tileSet.getAttribute('tilewidth')),
 							int(tileSet.getAttribute('tileheight')),
-							tileSet.childNodes[1].getAttribute('source'),
-							tileSet.getAttribute('width'),
-							int(tileSet.getAttribute('imageheight')))
+							tileSet.childNodes[1].getAttribute('source'), #tileset.childNodes[1] refers to <image>
+							int(tileSet.childNodes[1].getAttribute('width')),
+							int(tileSet.childNodes[1].getAttribute('height')))
 			self.tileSets.append(newTileSet)
-		#Traverse Layers
+		#Layers
 		for layer in self.dom.getElementsByTagName('layer'):
 			newLayer = Layer((layer.getAttribute('width'),layer.getAttribute('height')))
 			newTiles = []
