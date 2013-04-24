@@ -24,17 +24,24 @@ class Level():
 				count += 1
 				x += size[0] / tile.tileSet.tileW * count
 				y += size[1] / tile.tileSet.tileH * count
+				#max x and y values
+				if x >= size[0] / tile.tileSet.tileW:
+					x = 0
+				if y >= size[0] / tile.tileSet.tileW:
+					y = 0
+
+				print x,y 
 
 	def _parse(self):
 		#Tile Sets
 		for tileSet in self.dom.getElementsByTagName('tileset'):
 			newTileSet = TileSet(tileSet.getAttribute('firstgid'),
 							tileSet.getAttribute('name'),
-							tileSet.getAttribute('tilewidth'),
-							tileSet.getAttribute('tileheight'),
+							int(tileSet.getAttribute('tilewidth')),
+							int(tileSet.getAttribute('tileheight')),
 							tileSet.childNodes[1].getAttribute('source'),
 							tileSet.getAttribute('width'),
-							tileSet.getAttribute('imageheight'))
+							int(tileSet.getAttribute('imageheight')))
 			self.tileSets.append(newTileSet)
 		#Traverse Layers
 		for layer in self.dom.getElementsByTagName('layer'):
@@ -84,7 +91,7 @@ class Tile:
 	#grid id of tile
 	#size [width, height]
 	#source image
-	def __init__(self, gid, size, tileSet):
+	def __init__(self, gid, tileSet):
 		self.gid = gid
 		self.tileSet = tileSet
 
