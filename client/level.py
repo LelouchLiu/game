@@ -82,7 +82,7 @@ class TileSet(sprite.Sprite, SpriteSheet):
 		sprite.Sprite.__init__(self)
 		SpriteSheet.__init__(self, src)
 		path = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/" + src
-		self.img = pygame.image.load(path)
+		self.image = pygame.image.load(path)
 		self.firstgid = firstgid
 		self.name = name
 		self.tileW, self.tileH = tileW, tileH

@@ -16,17 +16,15 @@ class Entity(pygame.sprite.Sprite, Physical):
 							angularVel=0.087, collisionType = collisionType)
 
 		imgPath = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/ship.gif"
-		self.origImage = pygame.image.load(imgPath)
+		self.origImg = pygame.image.load(imgPath)
 		self.image = pygame.image.load(imgPath)
 		self.rect = self.image.get_rect()
 		self.rect.center = recPos
-
 		self.resolution = resolution
 		self.direction= Vec2d(0,0) 
 		self.observers = []
 		self.coolDowns = [False]
 		self.alive = True
-
 		self.hp = 100
 
 	def takeDmg(self, dmg):
@@ -88,7 +86,7 @@ class Entity(pygame.sprite.Sprite, Physical):
 		elif self.orientation < 0:
 			self.orientation += (2 * pi)
 		oldPos = copy.deepcopy(self.rect.center)
-		self.image = pygame.transform.rotate(self.origImage, self.toDegrees(self.orientation))
+		self.image = pygame.transform.rotate(self.origImg, self.toDegrees(self.orientation))
 		self.rect = self.image.get_rect(center=oldPos)
 		self.body._set_angle(self.orientation)
 
