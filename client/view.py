@@ -58,10 +58,8 @@ class Window(object):
 			self.client.playAnim("death")
 
 	def drawLevel(self):
-		#self.level.draw(self.screen, self.resolution)
-		pass
+		self.level.draw(self.screen, self.resolution)
 		
-
 	def managerInit(self):
 		self.manager = Manager(self.client.seconds)
 		self.manager.addPlayer(self.client)

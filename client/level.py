@@ -2,6 +2,7 @@
 import os
 from xml.dom.minidom import parse, parseString
 from sprite_sheet import *
+from pygame import sprite
 
 #python xml parsing - http://wiki.python.org/moin/MiniDom
 #tiled tutorial - http://gamedev.tutsplus.com/tutorials/implementation/parsing-tiled-tmx-format-maps-in-your-own-game-engine/
@@ -27,7 +28,7 @@ class Level():
 			for tile in layer:
 				x = size[0] / tile.tileSet.tileW * i
 				y = size[1] / tile.tileSet.tileH * j
-				#screen.blit(tile.tileSet.src, (x,y))
+				#screen.blit(tile.tileSet.img, (x,y))
 				
 				#print x,y
 				if x >= self.size[0]:
@@ -41,10 +42,9 @@ class Level():
 				
 
 	def _parse(self):
-		#self.size = (self.dom.getElementsByTagName('map').getAttribute('width'),
-					#self.dom.getElementsByTagName('map').getAttribute('height'))
+		dom = self.dom.getElementsByTagName('map').item(0)
+		self.size = (dom.getAttribute('width'), dom.getAttribute('height'))
 
-		print self.dom.getElementsByTagName('map')
 		#Tile Sets
 		for tileSet in self.dom.getElementsByTagName('tileset'):
 			newTileSet = TileSet(tileSet.getAttribute('firstgid'),
@@ -75,18 +75,18 @@ class Level():
 				return previous
 
 #Stores information about each tile set
-class TileSet(SpriteSheet):
+class TileSet(sprite.Sprite, SpriteSheet):
 	#firstgid - first grid ID of this tile set
 	#tile width, tile heigh, source image, image width, image height
-	def __init__(self, firstgid, name, tileW, tileH, src, imageW, imageH):
+	def __init__(self, firstgid, name, tileW, tileH, src, imgW, imgH):
+		sprite.Sprite.__init__(self)
 		SpriteSheet.__init__(self, src)
+		path = os.path.dirname(os.path.dirname( os.path.realpath( __file__ ) ) ) + "/images/" + src
+		self.img = pygame.image.load(path)
 		self.firstgid = firstgid
 		self.name = name
-		self.tileW = tileW
-		self.tileH = tileH
-		self.src = src
-		self.imageW = imageW
-		self.imageH = imageH
+		self.tileW, self.tileH = tileW, tileH
+		self.imgW, self.imgH = imgW, imgH
 
 #Stores the tiles in one layer		
 class Layer:
